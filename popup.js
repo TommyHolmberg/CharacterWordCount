@@ -21,8 +21,10 @@ function executeContentScript() {
                 target: { tabId: tabs[0].id },
                 func: getWordCountList
             }, results => {
-                console.log(results);
-                document.getElementById('results').innerHTML = results[0].result;
+                document.getElementById('results').textContent = '';
+                document.getElementById('results').appendChild(
+                    new DOMParser().parseFromString(results[0].result, 'text/html').body.firstChild
+                );
             });
         });
     }
@@ -47,15 +49,20 @@ function getWordCountList() {
 
 
     function formatList(list) {
-        let html = '<ul style="list-style: none; padding: 0;">';
+        const ul = document.createElement('ul');
+        ul.style.listStyle = 'none';
+        ul.style.padding = '0';
+
         for (const key in list) {
-            html += "<li>";
-            const value = list[key];
-            html += `<strong>${key}</strong> ${value}`;
-            html += "</li>";
+            const li = document.createElement('li');
+            const strong = document.createElement('strong');
+            strong.textContent = key;
+            li.appendChild(strong);
+            li.appendChild(document.createTextNode(` ${list[key]}`));
+            ul.appendChild(li);
         }
-        html += "</ul>";
-        return html;
+
+        return ul.outerHTML;
     }
 
     function extractCharacterWords(body, semiColonPositions) {
