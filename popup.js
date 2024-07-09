@@ -1,14 +1,34 @@
 // popup.js
-document.addEventListener('DOMContentLoaded', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.executeScript(tabs[0].id,{            
-            code: '(' + getWordCountList.toString() + ')();'
-        }, (results) => {
-            console.log(results)
-            document.getElementById('results').innerHTML = results[0];
+function executeContentScript() {
+    if (typeof browser !== 'undefined') {
+        // Firefox
+        browser.tabs.query({ active: true, currentWindow: true })
+            .then(tabs => {
+                return browser.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    func: getWordCountList
+                });
+            })
+            .then(results => {
+                console.log(results);
+                document.getElementById('results').innerHTML = results[0].result;
+            })
+            .catch(error => console.error('Error:', error));
+    } else {
+        // Chrome
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            chrome.scripting.executeScript({
+                target: { tabId: tabs[0].id },
+                func: getWordCountList
+            }, results => {
+                console.log(results);
+                document.getElementById('results').innerHTML = results[0].result;
+            });
         });
-    });
-});
+    }
+}
+
+document.addEventListener('DOMContentLoaded', executeContentScript);
 
 function getWordCountList() {
 
