@@ -76,7 +76,7 @@ function getWordCountList() {
             }
             const offset = semiColonPositions[i];
             const amount = semiColonPositions[i + 1] - semiColonPositions[i];
-            const wordCount = countWords(body.substr(offset, amount)) - 2; // -1 since the last word before the next : will be a name of a character
+            const wordCount = countWords(body.substr(offset, amount)) - 1; // -1 since the last word before the next : will be a name of a character
             list[name] += wordCount;
         }
         return list;
