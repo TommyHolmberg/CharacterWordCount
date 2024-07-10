@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Character Word Counter",
-    "version": "1.0",
+    "version": "1.0.1",
     "description": "Counts words per character in scripts. Names must be uppercase, followed by a colon; replies separated by an empty line.",
     "permissions": [
         "activeTab",
